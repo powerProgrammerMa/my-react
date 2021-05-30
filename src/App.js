@@ -37,7 +37,7 @@ export default class App extends Component {
     render() {
         return (
             <div>
-                I am react_app........
+                I am ok react_app........
             </div>
         )
     }
