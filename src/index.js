@@ -2,8 +2,9 @@
  * @Author: mikey.zhaopeng 
  * @Date: 2021-05-30 15:57:48 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-05-30 17:15:04
+ * @Last Modified time: 2021-05-30 17:25:03
  */
+// 引入react核心库
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -18,8 +19,4 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
