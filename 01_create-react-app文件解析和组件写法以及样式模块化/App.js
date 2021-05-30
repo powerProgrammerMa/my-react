@@ -2,7 +2,7 @@
  * @Author: mikey.zhaopeng 
  * @Date: 2021-05-30 17:26:08 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-05-31 02:55:32
+ * @Last Modified time: 2021-05-30 18:10:25
  */
 
 
@@ -32,18 +32,20 @@ import './App.css';
 // export default App;
 //创建类组件
 import React, { Component } from 'react'
-import State from "./components/State"
-import Eventbind from "./components/Eventbind"
-import Props from "./components/Props"
+import Hello from "./components/Hello/Hello"
+import Welcome from "./components/Welcome/Welcome.jsx"
+import Welcome2 from "./components/Welcome2"//采用index写法引入是比较简短的
+
 export default class App extends Component {
     render() {
         return (
             <div>
-               <h1>
-                   <State></State>
-                   <Eventbind></Eventbind>
-                   <Props name="tom" age={18} sex="女"></Props>
-               </h1>
+                {/* 这里演示了组件的三种写法  */}
+               <div>
+                   <Hello></Hello>  
+                   <Welcome></Welcome> 
+                   <Welcome2></Welcome2>
+               </div> 
             </div>
         )
     }

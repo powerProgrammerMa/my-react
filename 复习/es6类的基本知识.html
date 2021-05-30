@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+//创建一个Person类
+class Person{
+    // 构造器方法
+    constructor(name,age){
+        //构造器中的this指向类的实例对象
+        this.name = name;
+        this.age = age
+    }
+    // 类中直接写赋值语句,下面代码就是给Person实例对象自身添加了一个属性为Ename，值为women;
+    Ename="women"
+    // Person类的一般方法
+    speak(){
+        //speak方法放在了哪里---类的原型对象上；供实例使用
+        //this指向调用对象
+        console.log("我叫："+this.name+";我的年龄是："+this.age)
+    }
+}
+//创建一个类的实例
+const p1 = new Person("tom",18);
+
+//类的继承
+//创建一个student类继承Person
+class Student extends Person{
+    constructor(name,age,grade){
+        super(name,age);//如果类是一个继承类那么要写构造器必须调用super（）并且在第一行；
+        //构造器中的this指向类的实例对象
+        this.grade = grade;
+    }
+    //重写原型对象继承过来的方法
+    speak(){
+        console.log("我叫："+this.name+";我的年龄是："+this.age+";我读的是："+this.grade)
+    }
+    study(){
+        console.log("我很努力的学习！")
+    }
+}
+const s1 = new Student("校长",20,"高一")
+console.log(s1)
+
+// 总结：
+        // 1.类的构造器不是必须的，需要初始化才需要写
+        // 2.如果A类继承了B类且A类写了构造器那么A类的构造器必须调用super（）并且在第一行
+        // 3.类中定义的方法都是放在了类的原型对象上的，供类的实例使用
+        // 4.类中定义的方法在局部都开启了严格模式
+        // 5.类中可以直接写赋值语句
+        
+        
+</script>
+

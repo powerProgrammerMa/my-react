@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+    let arr1 = [1,3,5,7,9];
+    let arr2 = [2,4,6,8,10];
+    console.log(...arr1);//展开一个数组
+    let arr3 = [...arr1,...arr2];//连接数组
+    console.log(arr3)
+    //运用于函数动态传参
+    function sum(...numbers){
+        console.log(numbers)
+        // numbers是一个数组
+        return numbers.reduce((preValue,currentValue)=>{
+            return preValue+currentValue
+        })
+    }
+    console.log(sum(1,3,5,7,10))
+
+    let person = {name:"tom",age:18};
+    // console.log(...person)--报错--展开运算符不能展开对象---这是原生不允许这样写；但是在react+babel就可以展开对象，但仅适用在标签传递属性
+    let ourperson = {...person};//通过展开运算符复制对象
+    let ourperson2 = {...person,name:"jack",address:"地球"};//通过展开运算符复制对象并且修改其属性和新增属性
+</script>
+
