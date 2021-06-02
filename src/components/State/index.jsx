@@ -17,7 +17,7 @@ export default class State extends Component {
     render() {
         return (
             <div>
-                <h1>State的使用</h1>
+                <h1>1.State的使用</h1>
                 <div>{this.state.isHot?"今天天气炎热":"今天天气凉爽"}</div>
             </div>
         )

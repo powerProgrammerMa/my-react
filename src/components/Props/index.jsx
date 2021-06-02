@@ -56,7 +56,7 @@ export default class Props extends Component {
         const {name} = this.props;
         return (
             <div>
-                <h1>Props的使用</h1>
+                <h1>3.Props的使用</h1>
                 <div>这是我从外部接收到的数据name：{name}</div>
             </div>
         )

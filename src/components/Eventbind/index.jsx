@@ -37,22 +37,22 @@
                 });
         5.state改变就会调用render（）
  */
-import React, { Component } from 'react'
-import "./index.css"
+import React, { Component } from 'react';
+import './index.css';
 export default class Eventbind extends Component {
-    constructor(props){
-        // 这里的this是指向组件的实例对象所以可以直接使用this
-        super(props);
-        this.state={
-            isHot:false,
-            wind:"微风"
-        }
-    /*   
+	constructor(props) {
+		// 这里的this是指向组件的实例对象所以可以直接使用this
+		super(props);
+		this.state = {
+			isHot: false,
+			wind: '微风'
+		};
+		/*   
         解决change中this指向问题
         this.change = this.change.bind(this)
      */
-    }
-    /* 
+	}
+	/* 
     如果下面这样写会导致调用时this指向undefind：由于change方法是作为onClick的回调，所以不是通过Eventbind实例对象调用的，是直接调用，
                                              并且由于类中的方法开启了严格模式，所以指向了undefind
     change(){
@@ -68,19 +68,22 @@ export default class Eventbind extends Component {
                 })
             }
     */
-    change=()=>{
-        this.setState({
-            isHot:!this.state.isHot
-        })
-    }
-    render() {
-        //读取状态，注意这里的this是指向组件实例对象的所以可以直接使用this
-        const {isHot,wind} = this.state;
-        return (
-            <div>
-                <h1>事件绑定和修改State数据</h1>
-                <div onClick={this.change}>{isHot?"今天天气炎热!":"今天天气凉爽!"}{"----"+wind}</div>
-            </div>
-        )
-    }
+	change = () => {
+		this.setState({
+			isHot: !this.state.isHot
+		});
+	};
+	render() {
+		//读取状态，注意这里的this是指向组件实例对象的所以可以直接使用this
+		const { isHot, wind } = this.state;
+		return (
+			<div>
+				<h1>2.事件绑定和修改State数据</h1>
+				<div onClick={this.change}>
+					{isHot ? '今天天气炎热!' : '今天天气凉爽!'}
+					{'----' + wind}
+				</div>
+			</div>
+		);
+	}
 }

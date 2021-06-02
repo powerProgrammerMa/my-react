@@ -23,6 +23,7 @@ jsx语法规则：
     7.关于标签首字母：
         （1）如果是小写，则将该标签转为html同名标签，如果html中没有该标签，则报错
         （2）如果是大写，react就回去渲染对应的组件，若没有该组件，则报错
+    8.jsx的注释{/*  */}
 
 模块与组件，模块化与组件化的理解：
     模块：向外提供特定功能的js；能够服用js，简化js编写提高运行效率
@@ -87,4 +88,132 @@ yarn eject  ---暴露webpack.config.js
             1.把index.css改成 index.module.css;
             2.引入的时候用import Welcom from “./index.module.css”；
             3.使用的时候使用Welcom.类名这样就可以避免了
+
+
+react路由：
+    路由其实就是一种映射关系（key：value）
+    key就是路径，value可能是function（后端路由）或者component（前端路由）
+    后端路由：router。get("path",function(){})
+    前端路由：<Route path="/test" component={Test}> </Route>
+    路由也是基于我们浏览器的history进行工作的
+    我们使用的是react-router-dom
+    里面的内置组件：
+        <BrowserRouter>
+        <HashRouter>
+        <Route>
+        <Redirect>
+        <Link>
+        <NavLink>
+        <Switch>
+
+        history对象
+        match对象
+        withRouter函数
+    一、react中靠路由链接实现切换组件：Link(<Link to="/about">About</Link>）需要包裹在<BrowserRouter>或者<HashRouter>内使用   
+    二、<Route>:用于注册路由(<Route path="/about" component={About}></Route>) 需要包裹在<BrowserRouter>或者<HashRouter>内使用    
+            上面两个组件都需要包裹在<BrowserRouter>或者<HashRouter>内使用，但是我们一个应用应该只是用一个<BrowserRouter>或者<HashRouter>所以只需要在最外层的dom渲染函数render那里去包裹上就可以了
+            
+            一般我们会把路由里面使用的组件单独放在pages里面
+                路由组件：需要通过路由匹配进行展示
+                一般组件：需要自己写标签展示(其实我们写成双标签的时候标签的内容也会传递到props里面的children字段--通过this.props.childer就可以拿到我们在写标签是的标签内容)---vue里面是通过slot来进行标签传递的
+                他们两个的props来源是不一样的：
+                    一般组件是由写组件时来传递的；
+                    路由组件接受到的props：注：仅保留开发中会使用到的
+                        history:
+                            go: ƒ go(n)
+                            goBack: ƒ goBack()
+                            goForward: ƒ goForward()
+                            push: ƒ push(path, state)
+                            replace: ƒ replace(path, state)
+                        location:
+                            pathname: "/about"
+                            search: ""
+                            state: undefined
+                        match:
+                            params: {}
+                            path: "/about"
+                            url: "/about"
+    三、<NavLink>：点击路由链接实现高亮这时我们就不在使用Link： <NavLink activeClassName="click" to="/about">About</NavLink>
+                activeClassName==>活跃时添加类名
+    四、<Switch>：提高路由匹配效率的；
+              路由在匹配的时候默认是要全部都匹配一遍，如果路由较多那么效率就会低，那么我们把所有路由包裹在Switch标签里面之后路由匹配时就在匹配到之后就不再往下匹配了
+
+
+
+    五、解决样式丢失问题：
+        问题描述：当我们在index.html里面引入了其他三方css或者自己的css，当我们的路由是多层级的，例如："/at/about"，那么当我们强制刷新页面的时候会导致这个引入的样式资源请求不到，他会把/at也当作请求路劲，但是是我们网络请求的时候也是看到200，那是因为webpack配置的如果路径错误返回index.html；
+        解决方案：
+            1.引入的时候不要使用相对路径，使用绝对路径；---建议使用
+            2.把.替换成%PUBLIC_URL%---建议使用
+            3.使用HashRouter
+    六、路由的精准匹配和模糊匹配：（默认是模糊匹配）
+        1.模糊匹配：我们注册的path是/home，但是我们输入的时候输入的是/home/a,同样是可以匹配到的，返过来注册的path是/home/a，但是我们输入的时候输入的是/home,这种是不行的，而且在模糊匹配的时候是从前往后匹配的，顺序错了也不能匹配到
+        2.精准匹配：path和输入的必须一一对应；开启方式：在<Route>标签上添加属性：exact
+        注意不要随意开启严格匹配，有时候开启之后会导致二级路由无法匹配，一般一级路由都不开启
+        路由的匹配时从最开始进行匹配的
+
+    七、<Redirect>：重定向：可用于我们在进入页面时设置默认页面
+                    放在路由注册的最下方
+                     <Redirect to="/about" />  
+    八、路由嵌套：注意在使用和注册子路由的的时候to和path一定要带上父路由
+    九、路由传参：写在嵌套路由里面的Message下面的GetParams组件
+        1.携带params参数---直接在路径里面写，这种需要在注册的时候声明你有参数传递----常用
+            <Link to={`/newwhome/message/detail${item.id}`}>{item.title}</Link>
+            <Route path="/newhome/Message/detail/:id" component={GetParams}></Route>
+            接收参数：this.props.match.params
+        2.传递search参数:写在嵌套路由里面的Message下面的GetSearch组件
+            <Link to={`/newhome/message/GetSearch/?id=${item.id}&title=${item.title}`}>{item.title}</Link>
+            注册的时候无需声明参数传递
+            接收参数:this.props.location.search
+                    但是这里要说明拿到的是一个字符串,所以我们需要借助querystring这个库(无需下载)
+                    import qs from "querystring"
+                    let obj = {name:"ms",age:"18"};
+                    qs.stringify(obj)-----"name=ms&age=18"
+                    qs.parse("name=ms&age=18")----{name:"ms",age:"18"}
+                    //所以取sreach参数
+                    const {id,title} = qs.parse(this.props.location.search.slice(1))
+        3.传递state参数:---这个不是组件里面的state是路由的state---写在嵌套路由里面的Message下面的GetState组件
+                    传递时需要写成对象形式:
+                    <Link to={{pathname:"/newhome/Message/GetState",state:{id:item.id,title:item.title}}}>{item.title}</Link>
+                    注册的时候无需声明参数传递
+                    接收参数:this.props.location.state  
+            备注:这种方式在BrowserRouter刷新没问题但是在HashRouter是丢失数据的,但是这种方式在直接输入地址的时候就会存在报错的情况,要么不使用这种,要么就做好错误控制(变量不存在时做处理)
+    十、路由的replace模式:
+            我们在编写路由的时候默认是开启的push模式;
+            开启:在Link标签上添加:replace={true}或者直接写 replace
+            演示看写在嵌套路由里面的Message
+    十一、编程式路由导航：
+            this.props.history.push();
+            this.props.history.replace()
+             编写一段代码，让其实现跳转到detail组件，且为push跳转，携带params参数
+            this.props.history.replace(`/newhome/message/GetParams/${item.id}/${item.title}`)
+            编写一段代码，让其实现跳转到detail组件，且为push跳转，携带search参数
+            this.props.history.replace(`/newhome/message/GetSearch/?id=${item.id}&title=${item.title}`)
+            编写一段代码，让其实现跳转到detail组件，且为push跳转，携带state参数
+            this.props.history.replace(`/newhome/Message/GetState`,{id:item.id,title:item.title})
+            replace是一样的
+
+
+            this.props.history.go(2)---前进2个,传负数就是后退几个
+            this.props.history.goBack()--回退
+            this.props.history.goForward()--前进
+    十二、withRouter的使用：可以加工一般组件，让一般组件拥有了路由组件的功能API
+            我们知道只有路由组件的props里面才有history，那么为我们要在一般组件里面使用呢？
+            使用withRouter
+            import withRouter from "react-router-dom"
+            组件暴露时进行改造：
+            export default withRouter(Main)
+            这样Main组件就拥有了路由组件的功能
+            演示看写在嵌套路由里面的Message下的withRouter组件
+    十三、HashRouter和BrowserRouter的区别：
+            1.实现原理不同：
+                    HashRouter：使用的是浏览器路径的hash值
+                    BrowserRouter：使用的是H5的history的API,不兼容IE9以下版本
+            2.路径表现形式：
+                    HashRouter：带有#
+                    BrowserRouter：正常路径
+            3.刷新后对路由传递的state参数的影响：
+                    HashRouter：直接丢失数据
+                    BrowserRouter：没有影响，因为是保存在history中的
+            备注：HashRouter可以解决一些路径错误的问题
 
