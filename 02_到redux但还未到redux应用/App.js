@@ -2,7 +2,7 @@
  * @Author: mikey.zhaopeng 
  * @Date: 2021-05-30 17:26:08 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-06-03 19:20:30
+ * @Last Modified time: 2021-06-03 19:11:53
  */
 
 
@@ -45,8 +45,10 @@ import Check from "./components/Diffing/Check"
 import Key from "./components/Diffing/Key"
 import Router from "./components/Router"
 import MoreRouter from "./pages/路由嵌套/Main"
+import CountRedux from "./components/ReduxUse/Count"
+import CountReactRedux from "./containers/Count"
+import CountReactRedux2 from "./containers/Count精简版"
 import CountReactRedux3 from "./components/ReactReduxUse/Count组件合并UI和容器"
-import CountReactRedux4 from "./components/ReactReduxUse/ReactRedux实际使用/Person"
 
 
 //这里引入store是为了使用我们的react-redux，他要求store必须由使用容器的地方通过props传入
@@ -68,11 +70,14 @@ export default class App extends Component {
                    <Key></Key>
                    <Router></Router>
                    <MoreRouter></MoreRouter>
-                
+                   <CountRedux></CountRedux>
+                   {/* 这是使用react-redux的容器组件 */}
+                   <CountReactRedux store={store}></CountReactRedux>
+                   {/* 这是使用react-redux的容器组件，但是由于我们在最外层添加了Provider组件所以这里就不需要在传递store */}
+                   <CountReactRedux2 ></CountReactRedux2>
                    {/* 这是将容器组件和UI组件合并了 */}
                    <CountReactRedux3 ></CountReactRedux3>
-                   {/* 这是react-redux实际使用，实现数据共享 */}
-                   <CountReactRedux4 ></CountReactRedux4>
+                  
             </div>
         )
     }

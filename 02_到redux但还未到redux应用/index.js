@@ -2,7 +2,7 @@
  * @Author: mikey.zhaopeng 
  * @Date: 2021-05-30 15:57:48 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-06-04 00:01:26
+ * @Last Modified time: 2021-06-03 17:29:30
  */
 // 引入react核心库
 import React from 'react';
@@ -17,7 +17,6 @@ import {Provider} from "react-redux"
 
 ReactDOM.render(
   // React.StrictMode包裹之后能够检查App组件里面的代码不合理的地方--比如由于版本更新某些api不适用了 就会提示
-  //Provider组件能够分析他下面的所有容器组件并且把指定数据传入进去，这样就不用每个容器去传store了
   <React.StrictMode>
     <BrowserRouter>
     <Provider store={store}> <App /></Provider>

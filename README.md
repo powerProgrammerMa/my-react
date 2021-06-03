@@ -204,7 +204,7 @@ react路由：
             组件暴露时进行改造：
             export default withRouter(Main)
             这样Main组件就拥有了路由组件的功能
-            演示看写在嵌套路由里面的Message下的withRouter组件
+            演示看写在pages/嵌套路由/Message下的withRouter组件
     十三、HashRouter和BrowserRouter的区别：
             1.实现原理不同：
                     HashRouter：使用的是浏览器路径的hash值
@@ -217,3 +217,136 @@ react路由：
                     BrowserRouter：没有影响，因为是保存在history中的
             备注：HashRouter可以解决一些路径错误的问题
 
+
+redux：redux是一个专门用于状态管理的js库，集中管理多个组件的共享状态（不是专属于react的），但是基本是与react进行配合
+        npm i redux
+    一、action：动作对象---较为简单的redux这个可以省略的
+            包含两个属性：
+                type：标识属性，值为字符串，唯一必要属性（一般我们会在单独新建一个常量文件存放我们的type值---constant）
+                data：数据属性，值类型任意，可选属性
+                例如：{type:"ADD_STUDENT",data:{name:"tom",age:18}}
+    二、reducer:用于加工和初始化状态
+                加工时：根据旧的state和传递的action，产生新的state的纯函数
+                初始化：是由store调用的传递的preState是undefind，action是“@@redux/INIT_”
+    三、store：将state、action、reducer联系在一起的对象
+                1.如何得到此对象：
+                    import {creatStore} from "redux"
+                    import reducer from "./reducers"
+                    const store = createStore(reducer)
+                2.此对象的功能
+                    1.getState():得到state
+                    2.dispatch(action):分发action，触发reducer调用，产生新的state
+                    3.subscribe（listener）：注册监听，当产生新的state时自动调用
+    
+    四、react-Components：
+        组件使用：
+        //引入store,用于获取store中的状态
+        import stroe from "../../../redux/store"
+        store.getState()：获取redux数据
+        //通知redux执行加操作
+        store.dispatch({type:"increment",data:parseInt(num)})
+        //但是现在数据改变还不能触发页面渲染，需要手动监听
+        componentDidMount(){
+            //监听当redux数据改变重新调用render函数
+            store.subscribe(()=>{
+                //这么写就是为了重新渲染页面调用render
+                this.setState({})
+            })
+        }
+        //但是这种写法每个组件都需要写，那么我们就提取到入口文件里面
+    五、在index.js中监测store的状态变更，一旦发生改变重新渲染入口组件
+        //全局监听redux数据变化
+        store.subscribe(()=>{
+        ReactDOM.render(
+            <React.StrictMode>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+            </React.StrictMode>,
+            document.getElementById('root')
+        );
+        })
+    六、异步action：function===何时使用？想要对状态进行操作，但是具体数据依靠异步任务返回--不是必须使用
+                    需要使用中间件redux-thunk
+                    由于store.js默认只认识object类型，当我们使用异步action的时候返回的是function，所以需要使用一个中间件redux-thunk
+                    这个中间件主要是告诉store，这个action先不要给reducer执行，先执行这个异步action
+                    store.js改造：
+                        import {createStore,applyMiddleware} from "redux" //createStore专门用于创建redux中最为核心的库store
+                        import countReducer from "./count_reducer"//引入我们的reducers
+                        //引入redux-thunk,同时要引用redux库中的applyMiddleware执行中间件，用于支持异步action
+                        import thunk from "redux-thunk"
+                        //暴露store
+                        export default createStore(countReducer,applyMiddleware(thunk))
+        同步action：Object
+
+
+react-redux：这是react官方出品的redux库：他就是想我们的UI组件都没有redux操作，所有操作都拿到我们的容器组件里面来
+        1.所有的UI组件都应该包裹在一个容器组件里面，他们是父子组件关系
+        2.容器组件才是真正和redux打交道的，里面可以随意使用redux的API
+        3.UI组件里面不能使用任何redux的API
+        4.容器组件会传递给UI组件：1.redux保存的状态2.用于操作状态的方法
+        5.备注：容器给UI传递：状态、操作的方法，均是通过props传递
+
+        如果要使用react-redux：
+            1.要为我们的每个UI组件编写一个容器组件，像我在container里面写的Count组件就是一个容器组件，以后就不在使用UI组件而使用容器组件并且传递store是在使用容器组件传入的不需要在容器组件中引入store
+                （1）容器组件里面的两个函数
+                        mapStateToProps：传递state
+                        mapDispatchToProps：传递操作redux数据的方法
+                （2）连接UI组件和store的connect写法：
+                        export default connect(mapStateToProps,mapDispatchToProps)(CountUI)
+            2.不管是使用redux还是react-redux我们都不会改变我们所写的redux文件夹下面的东西，仅仅只是改变了使用方法
+            3.UI组件页面使用redux数据是在props里面去获取的，想要操作redux数据也是在props里面去获取的方法的
+        
+        基本使用写在reactReduxUse/Count（UI组件），容器组件写在container/Count
+        精简写法写在reactReduxUse/Count精简版（UI组件），容器组件写在container/Count精简版
+                1.代码层面精简以及使用react-redux自动帮我们分发action来精简
+                2.使用了react-redux之后我们就不需要在全局开启监听state变化了，容器组件已经具备了监听变化的能力
+                3.上面我们说过我们需要在使用容器组件的地方传入store，开发中我们有很多的容器组件，那么每个都要传store，如果只想传递一次那么我们就可以使用react-redux里面的Provider--提供者组件，这个组件能够分析他下面的所有容器组件并且把指定数据传入进去
+                index.js改造：
+                    ReactDOM.render(
+                        <React.StrictMode>
+                            <BrowserRouter>
+                            <Provider store={store}> <App /></Provider>
+                            </BrowserRouter>
+                        </React.StrictMode>,
+                        document.getElementById('root')
+                4.文件树优化：像我们上面那种写法，一个UI组件就必须要有一个容器组件，但是其实可以把UI组件和容器组件合并
+                    使用例子看：reactReduxUse/Count组件合并UI和容器，这是是没有单独写container的
+
+！！！上面所有的代码都放在了02_到redux但还未到redux应用---要查看改成src就可以启动了,主要是由于后面我们有了多个reducer所以取值方式有所改变修改的地方较多 所以做了预保留
+
+        实际开发：实际开发的时候，我们会建立actions文件夹，reducers文件夹存放每个组件的action和reducer
+                那么既然我们有多个reducer在store.js里面就需要更改暴露形式了，要使用到redux里面的combineReducers--API来合并我们的多个reducer:合并之后是一个总的状态对象---当然我们一般会在项目中单独在reducers文件夹下面去写个index文件汇总后暴露出来
+                    const allReducer = combineReducers({
+                            sum:countReducer,
+                            rens:personReducer
+                        })//这里传入的对象就是我们redux保存的总状态对象
+                        //那么我们在取值的时候就需要注意取到相应层级，相当于加上我们这里定义的层级---state=>({persons:state.persons}),
+                    //暴露store
+                    export default createStore(allReducer,applyMiddleware(thunk))
+                
+        注意事项：
+            纯函数：一类特别的函数，只要是同样的输入，必须得到同样的输出
+            它必须遵循一下规则：
+                    1.不得修改参数数据
+                    2.不会产生任何副作用，例如网络请求，输入输出设备
+                    3.不能调用Date.now（）或者Math.random()这种不纯的方法
+            而我们的redux中的reducer就必须是一个纯函数，所以我们在操作redux中的数组和obj数据的时候尽量使用扩展符来产生新的数据作为返回，减少使用数组的一些方法
+            vue里面其实也是这么在操作的
+redux开发者插件：chrome
+        1.浏览器安装扩展程序：redux DevTools
+        2.项目中下载redux-devtools-extension
+        3.改造.store配置:
+            export default createStore(allReducer,composeWithDevTools(applyMiddleware(thunk)))
+redux优化：
+        1.所有变量名尽量规范，触发我们的对象精简形式
+        2..reducers文件夹中，编写index.js专门用于汇总我们的reducer并暴露
+
+
+
+打包上线：
+        npm run build====生成build文件夹
+        现在生成的静态文件不可直接打开，需要在服务器上去运行
+        当然我们也可以使用serve服务器在本地启动服务器或者我们的live-server启动本地服务器
+
+    
